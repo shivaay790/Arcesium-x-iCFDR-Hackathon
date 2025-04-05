@@ -52,7 +52,6 @@ st.caption("A safe space for emotional support and mental health resources")
 
 
 # Configuration
-genai.configure(api_key="AIzaSyCywgtxEx4QzNLPOk7w7czbAlMqwuNqQCo")
 PSYCH_CONTENT_DIR = "psychological_resources/"
 
 # 2) Initialize Models
