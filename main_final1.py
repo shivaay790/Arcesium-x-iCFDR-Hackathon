@@ -9,7 +9,6 @@ import streamlit as st
 import google.generativeai as genai
 import re
 import os
-import asyncio
 
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -52,6 +51,7 @@ st.caption("A safe space for emotional support and mental health resources")
 
 
 # Configuration
+genai.configure(api_key=st.secrets["API_KEY"])
 PSYCH_CONTENT_DIR = "psychological_resources/"
 
 # 2) Initialize Models
