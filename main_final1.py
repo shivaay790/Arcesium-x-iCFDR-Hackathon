@@ -1,13 +1,25 @@
-# app.py
+####################################### 1) importing required libraries #######################################################################
+
+import torch
+if not hasattr(torch, '__path__'):
+    torch.__path__ = []
+
+
 import streamlit as st
 import google.generativeai as genai
 import re
-from langchain.vectorstores import FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import PyPDFLoader, DirectoryLoader
+import os
+import asyncio
 
-# Theme configuration
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+####################################### 2) intitializations ####################################################################################
+
+
+# 1) UI of APP
 st.set_page_config(
     page_title="PsyAssist - Mental Health Support",
     page_icon="💬",
@@ -34,23 +46,36 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.title("🧠 PsyAssist - Mental Health Companion") # App layout
+st.caption("A safe space for emotional support and mental health resources")
+
+
+
 # Configuration
 genai.configure(api_key="AIzaSyCywgtxEx4QzNLPOk7w7czbAlMqwuNqQCo")
 PSYCH_CONTENT_DIR = "psychological_resources/"
 
-# Initialize Models
-@st.cache_resource
-def load_models():
-    return (
-        genai.GenerativeModel('gemini-2.0-flash'),
-        genai.GenerativeModel('gemini-2.0-flash')
-    )
+# 2) Initialize Models
+@st.cache_resource  # caches the model to reduces time to reloading
+def load_model():
+    try:
+        return genai.GenerativeModel('gemini-2.0-flash')
+    except Exception as e:
+        st.error(f"Model loading failed: {e}")
+        return None
 
-chat_model, sentiment_model = load_models()
+model = load_model()
+chat_model = model
+sentiment_model = model 
 
-# Initialize Vector Store for RAG
+# 3) Initialize Vector Store for RAG
 @st.cache_resource(show_spinner=False)
 def initialize_rag():
+    faiss_index_path = "vectorstore/index.faiss"
+
+    if os.path.exists(faiss_index_path):
+        return FAISS.load_local("vectorstore", HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2'), allow_dangerous_deserialization=True)
+    
     try:
         loader = DirectoryLoader(
             PSYCH_CONTENT_DIR,
@@ -58,24 +83,38 @@ def initialize_rag():
             loader_cls=PyPDFLoader,
         )
         docs = loader.load()
+        # Add metadata: filename, page
+        for doc in docs:
+            doc.metadata['source'] = doc.metadata.get('source', 'unknown')
         
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200
+        text_splitter = RecursiveCharacterTextSplitter(  
+            chunk_size=5000,
+            chunk_overlap=400
         )
         chunks = text_splitter.split_documents(docs)
-        return FAISS.from_documents(chunks, HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2'))
+        vectorstore = FAISS.from_documents(chunks, HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2'))
+        vectorstore.save_local("vectorstore")
+
+        return vectorstore
+    # FAISS is a vec serach database for semantic search
     except Exception as e:
         st.error(f"RAG Initialization Error: {str(e)}")
         return None
 
 vector_store = initialize_rag()
 
-# Crisis detection and safety settings
+# 4) Session state initialization
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Hi! I'm PsyAssist. How can I support you today?"}
+    ]
+
+# 5) Crisis detection and safety settings
 CRISIS_TRIGGERS = [
-    r'\b(suicide|kill myself|end it all)\b',
-    r'\b(abuse|violence|rape)\b',
-    r'\b(overdose|cutting|self harm)\b'
+    r'\b(suicidal|suicide|kill myself|want to die|end it all|no reason to live|take my own life)\b',
+    r'\b(abused|being abused|sexual abuse|violence at home|domestic violence|raped|molested|assaulted)\b',
+    r'\b(overdose|over dosing|cutting|self[-\s]?harm|hurt myself|burning myself|self mutilation)\b',
+    r'\b(can[’\']?t go on|depressed|lost all hope|crying all day|hopeless|worthless)\b'
 ]
 
 SAFETY_SETTINGS = [
@@ -85,26 +124,29 @@ SAFETY_SETTINGS = [
     {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
 ]
 
-# Session state initialization
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "assistant", "content": "Hi! I'm PsyAssist. How can I support you today?"}
-    ]
 
+########################################################  3) helper functions #################################################################
+
+# 1) get context
 def retrieve_psychological_context(query):
     if not vector_store:
         return ""
-    results = vector_store.similarity_search(query, k=2)
-    return "\n".join([f"- {doc.page_content[:300]}..." for doc in results])
-
-def analyze_sentiment(text):
     try:
-        prompt = """Analyze this message for emotional state. Respond ONLY with:
+        results = vector_store.similarity_search(query, k=2)
+        return "\n".join([f"- {doc.page_content[:300].strip()}..." for doc in results])
+    except Exception as e:
+        st.error(f"Context retrieval error: {str(e)}")
+        return ""
+
+# 2) understand sentiment 
+def analyze_sentiment(text):
+    prompt = """Analyze this message for emotional state. Respond ONLY with:
         - Primary emotion (neutral, anxious, depressed, angry, suicidal)
         - Intensity (1-5)
         - Suicidal intent (yes/no)
         Format: emotion|intensity|suicidal"""
-        
+    
+    try:
         response = sentiment_model.generate_content(
             prompt + text,
             safety_settings=SAFETY_SETTINGS,
@@ -117,51 +159,65 @@ def analyze_sentiment(text):
         st.error(f"Sentiment analysis error: {str(e)}")
         return ["neutral", "1", "no"]
 
+
+# 3) give a response
 def generate_response(text, sentiment):
     context = retrieve_psychological_context(text)
-    
-    prompt = f"""Generate a supportive response using these guidelines:
-    {context}
-    
-    Requirements:
-    - Respond naturally (0-50 words)
-    - Focus on emotional validation
-    - Suggest practical coping strategies
-    - Be able to converation in friendly, non-formal and Multiple-languages based on user input.
-    - Do not use any random language until user uses it.
-    - Maintain conversational tone
-    - Suggest various unique ways for best possible output.
-    - While giving responses do not hallucinate and always check the RAG implemeneted Data or Previous chat history from user to give output.
-    
-    previous chat history: {st.session_state.messages}
+    previous_history = st.session_state.get("messages", [])
 
-    User message: {text}"""
+    prompt = f"""
+    Generate a friendly, emotionally supportive response following these rules:
+    
+    --- CONTEXT ---
+    {context}
+
+    --- CHAT HISTORY ---
+    {previous_history}
+
+    --- USER MESSAGE ---
+    {text}
+
+    --- REQUIREMENTS ---
+    - Keep it brief (max 50 words)
+    - strictly do not assume any pervious conversation with the user if not present in chat history
+    - if you dont understand why does a user gives a response as for context
+    - Use a natural, casual tone
+    - Validate user's emotion empathetically
+    - Suggest practical coping strategies
+    - Do not hallucinate or give facts not in context/chat history
+    - Reply in same language as user (detect automatically)
+    - Avoid switching languages randomly
+    - Ask a few questions before Offering diverse actionable suggestions
+    """
+
     
     try:
         response = chat_model.generate_content(
             prompt,
             safety_settings=SAFETY_SETTINGS,
-            generation_config={"max_output_tokens": 200, "temperature": 2}
+            generation_config={"max_output_tokens": 200, "temperature": 1.2}
         )
         return response.text.strip()
     except Exception as e:
         return "I'm having trouble formulating a response right now. Please try again later."
 
+# 4) check for crisis
 def check_crisis(text, sentiment):
     if sentiment[2] == 'yes': 
         return True
     return any(re.search(pattern, text.lower()) for pattern in CRISIS_TRIGGERS)
 
-# App layout
-st.title("🧠 PsyAssist - Mental Health Companion")
-st.caption("A safe space for emotional support and mental health resources")
+
+########################################################  4) decleare & run functions #################################################################
+
+
 
 # Chat interface
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if prompt := st.chat_input("Type your message..."):
+if prompt := st.chat_input("Type your message..."):    # := is the walrus operator (assignment expression), so prompt gets the input
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
