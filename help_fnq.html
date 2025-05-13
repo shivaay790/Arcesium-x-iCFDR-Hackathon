@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsyAssist - Help & FAQs</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary-color: #4b86b4;
+            --dark-bg: #0a192f;
+            --light-text: #e6f1ff;
+            --accent-color: #63c2de;
+            --danger-color: #e14658;
+            --secondary-bg: #172a45;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+
+        /* Navigation Bar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--secondary-bg);
+            padding: 1rem 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .app-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light-text);
+        }
+
+        .nav-button {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: var(--box-shadow);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-button:hover {
+            background-color: #2a4d69;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .section {
+            background-color: var(--secondary-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--accent-color);
+        }
+
+        h2 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* FAQ Accordion */
+        .faq-item {
+            margin-bottom: 1rem;
+        }
+
+        .faq-question {
+            background-color: var(--primary-color);
+            padding: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            background-color: rgba(75, 134, 180, 0.1);
+            padding: 1rem;
+            display: none;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+        }
+
+        .faq-question.active::after {
+            content: '−';
+        }
+
+        .faq-question.active {
+            border-radius: 4px 4px 0 0;
+        }
+
+        .faq-question.active + .faq-answer {
+            display: block;
+        }
+
+        /* Contact Info */
+        .contact-info p {
+            margin-bottom: 1rem;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .contact-icon {
+            background-color: var(--primary-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+
+        /* Crisis Resources */
+        .crisis-resources {
+            background-color: rgba(225, 70, 88, 0.1);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .resource-link {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            background-color: var(--secondary-bg);
+            color: var(--light-text);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+            
+            .logo {
+                height: 30px;
+            }
+            
+            .app-name {
+                font-size: 1.2rem;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo-container">
+            <img href="https://i.postimg.cc/XNCkJsFj/Psy-Assist-Mascot-1.png" alt="PsyAssist Penguin" style="height: 45px;
+            width: 45px;
+            margin-right: 15px;
+            border-radius: 50%;
+            object-fit: contain;
+            background-color: transparent;">
+            <span class="app-name">PsyAssist</span>
+        </div>
+        <a href="index.html" class="nav-button">Let's Chat</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>🧠 Help & Frequently Asked Questions</h1>
+
+        <!-- FAQ Section -->
+        <section class="section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">What is PsyAssist?</div>
+                <div class="faq-answer">
+                    PsyAssist is an AI-powered mental health support assistant designed to provide emotional support, 
+                    coping strategies, and mental health resources. It uses advanced AI technology to understand your
+                    concerns and provide helpful responses based on psychological principles.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Is my conversation private?</div>
+                <div class="faq-answer">
+                    Yes, your privacy is important to us. All conversations are encrypted and securely stored. Your data is 
+                    only used to improve the quality of responses and is not shared with third parties. You can request 
+                    deletion of your chat history at any time.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Is PsyAssist a replacement for therapy?</div>
+                <div class="faq-answer">
+                    No, PsyAssist is not a replacement for professional mental health treatment. While it can provide 
+                    support and resources, it should be used as a complementary tool. If you're experiencing severe 
+                    distress or have a mental health condition, please consult with a licensed mental health professional.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How does PsyAssist work?</div>
+                <div class="faq-answer">
+                    PsyAssist uses advanced AI technology to understand your messages and provide supportive responses. 
+                    It analyzes the emotional content of your messages and draws on psychological resources to give 
+                    appropriate and helpful responses. The system is designed to be empathetic, non-judgmental, and 
+                    focused on your wellbeing.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What should I do in a crisis situation?</div>
+                <div class="faq-answer">
+                    If you or someone you know is in immediate danger, please contact emergency services (911 in the US) 
+                    right away. For mental health crises, you can also contact:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>National Suicide Prevention Lifeline: 988</li>
+                        <li>Crisis Text Line: Text HOME to 741741</li>
+                        <li>Your local emergency mental health services</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I use PsyAssist in languages other than English?</div>
+                <div class="faq-answer">
+                    PsyAssist primarily operates in English but can understand and respond in several other languages. 
+                    For best results, we recommend using English, but feel free to communicate in your preferred language.
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Information -->
+        <section class="section">
+            <h2>Contact Information</h2>
+            <div class="contact-info">
+                <p>We're here to assist you with any questions or concerns about using PsyAssist:</p>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">📧</div>
+                    <span>Email: support@psyassist.org</span>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">📞</div>
+                    <span>Phone: (555) 123-4567</span>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">🌐</div>
+                    <span>Website: www.psyassist.org</span>
+                </div>
+
+                <p>Business Hours: Monday to Friday, 9:00 AM to 5:00 PM EST</p>
+            </div>
+        </section>
+
+        <!-- Crisis Resources -->
+        <section class="section crisis-resources">
+            <h2>Emergency Mental Health Resources</h2>
+            <p>If you're experiencing a mental health emergency, please use these resources:</p>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>National Suicide Prevention Lifeline: <a href="tel:988" class="resource-link">988</a></li>
+                <li>Crisis Text Line: Text HOME to <a href="sms:741741" class="resource-link">741741</a></li>
+                <li><a href="https://988lifeline.org" target="_blank" class="resource-link">988 Suicide & Crisis Lifeline</a></li>
+                <li><a href="https://www.crisistextline.org" target="_blank" class="resource-link">Crisis Text Line Website</a></li>
+                <li><a href="https://www.nami.org/help" target="_blank" class="resource-link">NAMI HelpLine</a></li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        &copy; 2025 PsyAssist - Mental Health Support Application developed by Soumya Sourav Das
+    </footer>
+
+    <script>
+        // FAQ Accordion Functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                question.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

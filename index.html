@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsyAssist - Chat</title>
+    <link rel="icon" href="resources/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="resources/psyassist_mascot_1.png" alt="PsyAssist Penguin">
+            <h2>PsyAssist</h2>
+        </div>
+        <div class="feature-item">
+            <a href="https://www.google.com/search?q=Fun+Mental+Health+Games&num=10&sca_esv=d3e47f5c41dad28e&sxsrf=AHTn8zrMx7BNNpUZfWeyMvDXEJoVeOqaiQ%3A1745158632191&ei=6AEFaN20C6aMseMP2Oz06Qo&ved=0ahUKEwjdyOTC5uaMAxUmRmwGHVg2Pa0Q4dUDCBA&uact=5&oq=Fun+Mental+Health+Games&gs_lp=Egxnd3Mtd2l6LXNlcnAiF0Z1biBNZW50YWwgSGVhbHRoIEdhbWVzMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHMgQQABhHSNMMUNEJWNEJcAF4ApABAJgBAKABAKoBALgBA8gBAPgBAZgCAqACCMICChAAGLADGNYEGEeYAwDiAwUSATEgQIgGAZAGCJIHATKgBwCyBwExuAcD&sclient=gws-wiz-serp">
+            <i class="fas fa-brain"></i> Mental Games
+            </a>
+        </div>
+        <div class="feature-item">
+            <a href="https://en.wikipedia.org/wiki/Self-healing">
+            <i class="fas fa-heart"></i> Self-Healing
+            </a>
+        </div>
+        <div class="feature-item">
+            <a href = "https://www.nimh.nih.gov/health/find-help">
+            <i class="fas fa-medkit"></i> Medical-Support
+            </a>
+        </div>
+        <div class="feature-item">
+            <a href = "https://www.who.int/news-room/fact-sheets/detail/mental-health-strengthening-our-response">
+            <i class="fas fa-book"></i> Wanna read?
+            </a>
+        </div>
+        <div class="feature-item">
+            <a href = "help_fnq.html">
+            <i class="fas fa-question-circle"></i> Help & FAQs
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <div class="navbar">
+            <div class="logo">
+                <img href="https://i.postimg.cc/XNCkJsFj/Psy-Assist-Mascot-1.png">
+                <h1>PsyAssist</h1>
+            </div>
+            <div class="nav-actions">
+                <button class="btn"><i class="fas fa-plus"></i> NEW CHAT</button>
+                <div class="dropdown">
+                    <button class="btn"><i class="fas fa-history"></i> History</button>
+                    <div class="dropdown-content">
+                        <a href="#">Recent Chat 1</a>
+                        <a href="#">Recent Chat 2</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="btn"><i class="fas fa-sliders-h"></i> Tone</button>
+                    <div class="dropdown-content">
+                        <a href="#">Friendly</a>
+                        <a href="#">Professional</a>
+                        <a href="#">Empathetic</a>
+                        <a href="#">Motivational</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="messages" id="chat-messages">
+                <div class="message bot-message">
+                    <p>Hi there! I'm PsyAssist, your penguin companion for mental wellbeing. How are you feeling today?</p>
+
+                </div>
+            </div>
+
+
+            <div class="user-input">
+                <textarea id="user-message" placeholder="Type your message here..."></textarea>
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Toggle Button -->
+    <button class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <script src="script.js"></script>
+</body>
+</html>
